@@ -84,7 +84,7 @@ class _QuizScreenState extends State<QuizScreen> {
     });
     _loadQuestions();
   }
-  
+
   Color _buttonColor(String answer) {
     if (!_answered) return Colors.indigo.shade600;
     final correct = _questions[_currentQuestionIndex].correctAnswer;
@@ -104,8 +104,19 @@ class _QuizScreenState extends State<QuizScreen> {
       );
     }
     if (_errorMessage != null) {
-      return const Scaffold(
-        body: Center(child: Text('Error loading questions')),
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.wifi_off, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text('Error loading questions',style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: _loadQuestions, child: const Text('Retry'),),
+            ],
+          ),
+        ),
       );
     }
     if (_quizFinished) {
