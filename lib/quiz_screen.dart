@@ -16,6 +16,10 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   int _currentQuestionIndex = 0;
+  int _score = 0;
+  bool _answered = false;
+  String? _selectedAnswer;
+
 
   @override
   void initState() {
@@ -41,6 +45,17 @@ class _QuizScreenState extends State<QuizScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  void _handleAnswer(String selected) {
+    if (_answered) return;
+    final correct=_questions[_currentQuestionIndex].correctAnswer;
+
+    setState(() {
+      _answered = true;
+      _selectedAnswer = selected;
+      if (selected == correct) _score++;
+    });
   }
 
   @override
@@ -73,7 +88,7 @@ class _QuizScreenState extends State<QuizScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _answered ? null : () => _handleAnswer(answer),
                   child: Text(answer),
                 ),
               );
