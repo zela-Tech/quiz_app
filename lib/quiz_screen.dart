@@ -86,7 +86,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Color _buttonColor(String answer) {
-    if (!_answered) return Colors.indigo.shade600;
+    if (!_answered) return Colors.teal.shade900;
     final correct = _questions[_currentQuestionIndex].correctAnswer;
     if (answer == correct) return Colors.green.shade600;
     if (answer == _selectedAnswer) return Colors.red.shade600;
@@ -96,6 +96,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final question = _questions[_currentQuestionIndex];
+    final progress = (_currentQuestionIndex + 1) / _questions.length;
 
 
     if (_isLoading) {
@@ -125,9 +126,11 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Quiz Complete!'),
-              Text('Score: $_score / ${_questions.length}'),
-              ElevatedButton(onPressed: _restartQuiz, child: const Text('Play Again'),),
+              const Text('Quiz Complete!', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              Text('Score: $_score / ${_questions.length}',style: const TextStyle(fontSize: 22)),
+              const SizedBox(height: 32),
+              ElevatedButton.icon(onPressed: _restartQuiz, icon: const Icon(Icons.refresh),label: const Text('Play Again'),),
             ],
           ),
         ),
@@ -136,29 +139,49 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trivia Quiz'),
+        backgroundColor: Colors.teal[800],
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(question.question, style: const TextStyle(fontSize: 20),),
-            const SizedBox(height: 20),
+            LinearProgressIndicator(value: progress, backgroundColor: Colors.grey.shade300, color: Colors.teal[800]),
+            const SizedBox(height: 8),
+            Text('Question ${_currentQuestionIndex + 1} of ${_questions.length} | Score: $_score',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            Text(_unescape.convert(question.question),style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+            const SizedBox(height: 24),
             ...question.allAnswers.map((answer) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _buttonColor(answer),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
                   onPressed: _answered ? null : () => _handleAnswer(answer),
-                  child: Text(answer),
+                  child: Text(_unescape.convert(answer), textAlign: TextAlign.center, style: const TextStyle(fontSize: 15)),
                 ),
               );
-            }),
+            }), 
             const Spacer(),
             if (_answered)
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal[800],
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
                 onPressed: _nextQuestion,
                 child: Text(
                   _currentQuestionIndex < _questions.length - 1 ? 'Next Question' : 'See Results',
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
           ],
