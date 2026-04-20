@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'api_service.dart';
 import 'question.dart';
 
@@ -11,6 +12,7 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   final ApiService _apiService = ApiService();
+  final HtmlUnescape _unescape= HtmlUnescape();
 
   List<Question> _questions = [];
   bool _isLoading = true;
@@ -81,6 +83,14 @@ class _QuizScreenState extends State<QuizScreen> {
       _quizFinished = false;
     });
     _loadQuestions();
+  }
+  
+  Color _buttonColor(String answer) {
+    if (!_answered) return Colors.indigo.shade600;
+    final correct = _questions[_currentQuestionIndex].correctAnswer;
+    if (answer == correct) return Colors.green.shade600;
+    if (answer == _selectedAnswer) return Colors.red.shade600;
+    return Colors.grey.shade600;
   }
 
   @override
