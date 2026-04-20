@@ -72,6 +72,16 @@ class _QuizScreenState extends State<QuizScreen> {
       });
     }
   }
+  void _restartQuiz() {
+    setState(() {
+      _currentQuestionIndex = 0;
+      _score = 0;
+      _answered = false;
+      _selectedAnswer = null;
+      _quizFinished = false;
+    });
+    _loadQuestions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +96,20 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_errorMessage != null) {
       return const Scaffold(
         body: Center(child: Text('Error loading questions')),
+      );
+    }
+    if (_quizFinished) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Quiz Complete!'),
+              Text('Score: $_score / ${_questions.length}'),
+              ElevatedButton(onPressed: _restartQuiz, child: const Text('Play Again'),),
+            ],
+          ),
+        ),
       );
     }
     return Scaffold(
