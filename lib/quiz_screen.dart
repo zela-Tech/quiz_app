@@ -19,6 +19,8 @@ class _QuizScreenState extends State<QuizScreen> {
   int _score = 0;
   bool _answered = false;
   String? _selectedAnswer;
+  bool _quizFinished = false;
+
 
 
   @override
@@ -57,6 +59,19 @@ class _QuizScreenState extends State<QuizScreen> {
       if (selected == correct) _score++;
     });
   }
+  void _nextQuestion() {
+    if (_currentQuestionIndex < _questions.length - 1) {
+      setState(() {
+        _currentQuestionIndex++;
+        _answered = false;
+        _selectedAnswer = null;
+      });
+    } else {
+      setState(() {
+        _quizFinished = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +108,14 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               );
             }),
+            const Spacer(),
+            if (_answered)
+              ElevatedButton(
+                onPressed: _nextQuestion,
+                child: Text(
+                  _currentQuestionIndex < _questions.length - 1 ? 'Next Question' : 'See Results',
+                ),
+              ),
           ],
         ),
       ),
