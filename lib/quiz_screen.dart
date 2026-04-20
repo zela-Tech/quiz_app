@@ -15,6 +15,7 @@ class _QuizScreenState extends State<QuizScreen> {
   List<Question> _questions = [];
   bool _isLoading = true;
   String? _errorMessage;
+  int _currentQuestionIndex = 0;
 
   @override
   void initState() {
@@ -44,6 +45,9 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final question = _questions[_currentQuestionIndex];
+
+
     if (_isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -54,8 +58,29 @@ class _QuizScreenState extends State<QuizScreen> {
         body: Center(child: Text('Error loading questions')),
       );
     }
-    return const Scaffold(
-      body: Center(child: Text('Data Loaded')),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Trivia Quiz'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(question.question, style: const TextStyle(fontSize: 20),),
+            const SizedBox(height: 20),
+            ...question.allAnswers.map((answer) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(answer),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 }
